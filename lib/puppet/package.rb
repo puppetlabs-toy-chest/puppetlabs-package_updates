@@ -117,7 +117,7 @@ class Puppet::Package
       # so we have to extract it from the message
       current_version, update_version = update.message.split(',')
       current_version = current_version.split[-1]
-      update_version  = update_version.split[-2] # (noop) is the last element in the message
+      update_version  = update_version.split[2] # (noop) is the last element & some providers have bugs that report spaces in versions
 
       package_updates[resource][:current]  = current_version
       package_updates[resource][:update]   = update_version
