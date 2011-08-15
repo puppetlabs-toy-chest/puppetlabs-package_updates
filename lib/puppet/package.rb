@@ -116,7 +116,7 @@ class Puppet::Package
       #The event doesn't show what the update version is
       # so we have to extract it from the message
       current_version, update_version = update.message.split(',')
-      current_version = current_version.split[-1]
+      current_version = current_version.split[1]
       update_version  = update_version.split[2] # (noop) is the last element & some providers have bugs that report spaces in versions
 
       package_updates[resource][:current]  = current_version
@@ -124,6 +124,7 @@ class Puppet::Package
     end
 
     #Filter only the packages we found updates for
-    package_updates.reject{ |p,h| ! h.has_key?(:update) }
+    #Also, filter out packages that apt reports as "installed", but not "purged"
+    package_updates.reject{ |p,h| (! h.has_key?(:update)) or h[:current] == 'absent' }
   end
 end
