@@ -1,0 +1,47 @@
+Description
+===========
+
+This module provides three things.  
+
+1) The puppet package plugin that adds the *package* subcommand to the *puppet* command.
+
+2) The custom MCollective package agent patched to support the package Face
+
+Face
+----
+
+Installation: 
+  Make sure this module is in your modulepath and make sure you have pluginsync = true 
+  in your puppet config. After a single puppet agent run, the plugin will be synced to the client.
+
+The puppet package face allows you to query what packages have updates available on your system. Updates are
+queried from any available provider that supports the *versionable*  and *upgradeable* features. 
+See http://docs.puppetlabs.com/references/stable/type.html#package for a list of providers and what 
+features they support.
+
+Help: 
+  You can get the available subcommands and parameters by using the command *puppet help package*
+
+Example:
+  To get a list of all packages that have updates, use the list action
+  # puppet package updates
+
+  To update a single package, use the update action.  You can specify which version and the provider to use
+  # puppet package update --provider=gem stomp
+
+MCollective
+-----------
+
+Installation:
+  Copy the ext/mcollective/agents/package.ddl and ext/mcollective/agents/package.rb files to your configured libdir
+  in MCollective (usually /usr/libexec/mcollective/mcollective/agents).  Reload the agents with this command:
+  # mc-controller reload_agents
+
+To apply a series of updates, you can use YAML to serialize a hash in the form 
+{ package_name => { :update => update_version, :provider => package_provider } }
+Pass the YAML to the update action
+
+Help:
+  To see what the available commands are and what the expect/return, use the mco help utility
+  # mco help package
+
