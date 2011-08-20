@@ -37,9 +37,9 @@ Installation:
   in MCollective (usually /usr/libexec/mcollective/mcollective/agents).  Reload the agents with this command:
   # mc-controller reload_agents
 
-To apply a series of updates, you can use YAML to serialize a hash in the form 
+To apply a series of updates, you can use a hash in the form 
 { package_name => { :update => update_version, :provider => package_provider } }
-Pass the YAML to the update action
+Pass the hash to the update action
 
 Help:
   To see what the available commands are and what the expect/return, use the mco help utility
