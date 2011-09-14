@@ -149,15 +149,6 @@ module MCollective
                                 raise LoadError
                               end
 
-                              #Check if we have yaml, if so
-                              #load it, and pass the resulting
-                              #hash to the package Face.
-                              if package =~ /^---/
-                                require 'yaml'
-
-                                package = YAML.load(package)
-                              end
-
                               reply[:output] = Puppet::Face[:package, '0.0.1'].update package
                             rescue LoadError
                               reply[:output] = pkg.update unless pkg.properties[:ensure] == :absent
