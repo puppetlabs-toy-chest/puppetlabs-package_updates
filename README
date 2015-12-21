@@ -75,6 +75,27 @@ be used against the /pdb/query/v4/facts endpoint:
       ["=", "environment", "production"]
     ]
 
+The following query will retrieve all updates for packages that's version is not being managed by Puppet
+
+    ["and",
+      ["=", "environment", "production"],
+      ["in", "name",
+        ["extract", "name",
+          ["select-resources",
+            ["and",
+              ["=", "type", "package"],
+              ["not",
+                ["or",
+                  ["=", "ensure", "latest"],
+                  ["~", "ensure", "^(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)$"]
+                ]
+              ]
+            ]
+          ]
+        ]
+      ]
+    ]
+
 You can use [subqueries](https://docs.puppetlabs.com/puppetdb/3.2/api/query/v4/facts.html#subquery-relationships) to construct more targeted queries.
 
 #### Report Generation
