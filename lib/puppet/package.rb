@@ -32,19 +32,6 @@ class Puppet::Package
     Puppet::Type.type(:package).instances
   end
 
-  #Takes in an array of Puppet::P
-  def self.apply_catalog(packages)
-    catalog = Puppet::Resource::Catalog.new
-
-    #According to the resources/catalog.rb file, you
-    #should be able to pass an array of resources
-    #to add_resource, but you can't, hmmm
-    packages.each do |package|
-      catalog.add_resource package
-    end
-
-    catalog.apply
-  end
 
   #Takes a hash in the form
   #  package_name = {
@@ -120,28 +107,28 @@ class Puppet::Package
 
     {'package_updates' => package_updates }
   end
-end
 
-private
-
-# Some providers require prefetching, while others don't even implement it
-# This method collects all of the providers for a given set of packages,
-# then calls prefetch on those that implement a prefetch method.
-def prefetch_updates(packages)
-  providers = packages.map {|p| p.provider.class }.uniq
-
-  providers.each do |provider|
-    next unless provider.methods.include? "prefetch"
-    to_prefetch = packages.select { |p| p.provider.class == provider }
-
-    # We have to submit packages to prefetch methods in title-keyed hash
-    prefetch_hash = Hash.new
-    to_prefetch.each { |p| prefetch_hash[p.title] = p }
-
-    # At least one package must be ensure => latest, or else lazy loading
-    # mechanisms will "helpfully" prevent prefetching
-    prefetch_hash[prefetch_hash.keys.first][:ensure] = :latest
-
-    provider.prefetch(prefetch_hash)
+  private
+  
+  # Some providers require prefetching, while others don't even implement it
+  # This method collects all of the providers for a given set of packages,
+  # then calls prefetch on those that implement a prefetch method.
+  def prefetch_updates(packages)
+    providers = packages.map {|p| p.provider.class }.uniq
+  
+    providers.each do |provider|
+      next unless provider.methods.include? "prefetch"
+      to_prefetch = packages.select { |p| p.provider.class == provider }
+  
+      # We have to submit packages to prefetch methods in title-keyed hash
+      prefetch_hash = Hash.new
+      to_prefetch.each { |p| prefetch_hash[p.title] = p }
+  
+      # At least one package must be ensure => latest, or else lazy loading
+      # mechanisms will "helpfully" prevent prefetching
+      prefetch_hash[prefetch_hash.keys.first][:ensure] = :latest
+  
+      provider.prefetch(prefetch_hash)
+    end
   end
 end
