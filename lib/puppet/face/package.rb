@@ -30,7 +30,7 @@ Puppet::Indirector::Face.define(:package, '0.0.1') do
     end
 
     when_rendering :console do |package_updates|
-      packages = package_updates['packages']
+      packages = package_updates['package_updates']
       output = Array.new
 
       #Provide pretty output

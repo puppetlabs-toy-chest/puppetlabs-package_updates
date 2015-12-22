@@ -109,25 +109,25 @@ class Puppet::Package
   end
 
   private
-  
+
   # Some providers require prefetching, while others don't even implement it
   # This method collects all of the providers for a given set of packages,
   # then calls prefetch on those that implement a prefetch method.
-  def prefetch_updates(packages)
+  def self.prefetch_updates(packages)
     providers = packages.map {|p| p.provider.class }.uniq
-  
+
     providers.each do |provider|
       next unless provider.methods.include? "prefetch"
       to_prefetch = packages.select { |p| p.provider.class == provider }
-  
+
       # We have to submit packages to prefetch methods in title-keyed hash
       prefetch_hash = Hash.new
       to_prefetch.each { |p| prefetch_hash[p.title] = p }
-  
+
       # At least one package must be ensure => latest, or else lazy loading
       # mechanisms will "helpfully" prevent prefetching
       prefetch_hash[prefetch_hash.keys.first][:ensure] = :latest
-  
+
       provider.prefetch(prefetch_hash)
     end
   end
