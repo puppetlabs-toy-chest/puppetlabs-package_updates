@@ -1,22 +1,34 @@
 {
   "name": "puppetlabs-package_updates",
   "version": "0.0.1",
-  "author": "Carl Caum",
-  "license": "Apache-2.0",
+  "author": "Puppet Labs",
   "summary": "A module for monitoring for package updates",
+  "license": "Apache-2.0",
   "source": "https://github.com/puppetlabs/puppetlabs-package_updates",
   "project_page": "https://forge.puppetlabs.com/puppetlabs/package_updates",
   "issues_url": "https://github.com/examplecorp/examplecorp-mymodule/issues",
-  "tags": ["patch", "updates", "packages"],
+  "dependencies": [
+  
+  ],
+  "tags": [
+    "patch",
+    "updates",
+    "packages"
+  ],
   "operatingsystem_support": [
     {
-    "operatingsystem":"RedHat",
-    "operatingsystemrelease": [ "6.0", "7.0" ]
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6.0",
+        "7.0"
+      ]
     },
     {
-    "operatingsystem": "Ubuntu",
-    "operatingsystemrelease": [ "12.04", "14.04" ]
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "12.04",
+        "14.04"
+      ]
     }
-   ],
-  "dependencies": [ ]
+  ]
 }
