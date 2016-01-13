@@ -5,8 +5,8 @@
   "summary": "A module for monitoring for package updates",
   "license": "Apache-2.0",
   "source": "https://github.com/puppetlabs/puppetlabs-package_updates",
-  "project_page": "https://forge.puppetlabs.com/puppetlabs/package_updates",
-  "issues_url": "https://github.com/examplecorp/examplecorp-mymodule/issues",
+  "project_page": "https://github.com/puppetlabs/puppetlabs-package_updates",
+  "issues_url": "https://github.com/puppetlabs/puppetlabs-package_updates/issues",
   "dependencies": [
   
   ],
