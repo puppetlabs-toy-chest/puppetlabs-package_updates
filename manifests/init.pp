@@ -6,6 +6,15 @@ class package_updates (
   $weekday  = undef,
 ) {
   if $::kernel != 'windows' {
+
+    # This is dumb but we must count on this directory existing
+    # and it may be managed somewhere else
+    exec { 'create facts.d':
+      command => 'mkdir -p /etc/puppetlabs/facter/facts.d/',
+      path    => '/bin:/usr/bin',
+      creates => '/etc/puppetlabs/facter/facts.d/',
+    }
+
     cron { 'package_updates':
       command  => 'puppet package updates --render-as json > /etc/puppetlabs/facter/facts.d/package_updates.json',
       minute   => $minute,
