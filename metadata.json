@@ -1,6 +1,6 @@
 {
   "name": "puppetlabs-package_updates",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "Puppet Labs",
   "summary": "A module for monitoring for package updates",
   "license": "Apache-2.0",
