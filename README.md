@@ -13,7 +13,7 @@
 
 ## Module Description
 
-This module provides a [Puppet Face](https://puppetlabs.com/puppet-faces-faq) to
+This is a proof-of-concept module  that provides a [Puppet Face](https://puppetlabs.com/puppet-faces-faq) to
 query available package updates from all package providers available on the system. The
 Face is able to query from over 12 package managers out of the box and more can be added by
 downloading modules from the Forge that include additional package providers, such as the
@@ -42,6 +42,19 @@ To have nodes scan for updates on a regular cadence and report the result as a c
 declare the ***package_updates*** class to any node or node group you'd like to monitor for updates.
 
 ### Usage
+
+#### Setting a scan schedule
+
+The module contains a single class: **package_updates**.  This class sets up a
+cron job to run the puppet face and caches the result in an external fact.  By
+default, the cron job runs every day at 3:00am.  You can change that with the
+available class parameters.
+
+* minute - The minute at which to run the scan. Default: undef
+* hour - The hour at which to run the scan. Default: 3
+* month - The month of the year. Default: undef
+* monthday - The day of the month to run the scan. Default: undef
+* weekday - The day of th week to run the scan. Default: undef
 
 #### Using the Puppet Command Line Interface
 
