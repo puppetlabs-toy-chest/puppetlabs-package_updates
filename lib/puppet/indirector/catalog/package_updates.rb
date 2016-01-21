@@ -1,4 +1,5 @@
 require 'puppet/node'
+require 'puppet/node/patches'
 require 'puppet/resource/catalog'
 require 'puppet/indirector/catalog/compiler'
 
@@ -14,7 +15,7 @@ class Puppet::Resource::Catalog::PackageUpdates < Puppet::Resource::Catalog::Com
     managed_packages = catalog.resources.find_all { |resource| resource.type == 'Package' }
 
     package_updates = Array.new
-    retrieve_package_updates.each do |name,parameters|
+    retrieve_package_updates(node).each do |name,parameters|
       package_parameters = { :name => name,
         :ensure   => parameters['update'],
         :provider => parameters['provider']
@@ -42,7 +43,13 @@ class Puppet::Resource::Catalog::PackageUpdates < Puppet::Resource::Catalog::Com
     Puppet::Resource.new(Puppet::Type::Package, title, {:parameters => parameters})
   end
 
-  def retrieve_package_updates
-    {"grub2" => {"current" => "7:2.02.105-14.el7", "update" => "1:2.02-0.34.el7.centos","provider" => "yum"}}
+  def retrieve_package_updates(node)
+    begin
+      Puppet::Node::Patches.indirection.find(node)
+    rescue Puppet::Node::Patches::NoPatchFile => e
+      Puppet.warning e
+      Puppet.warning "Continuing with compilation without managing patches"
+      return Hash.new
+    end
   end
 end
