@@ -123,6 +123,9 @@ Suggested tools:
 
 ### Limitations
 
+This module is compatible with Puppet 4.x+ only. It makes use of the Puppet 4 parameter data type 
+validation which is incompatible with Puppet 3.x
+
 This tool currently only works with non-Windows systems. Once the interface can handle both cron
 and scheduled_task resources, Windows support for package management systems like Chocolatey
 can easily be added.
