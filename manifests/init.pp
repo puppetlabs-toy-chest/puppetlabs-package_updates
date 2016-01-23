@@ -60,19 +60,10 @@ class package_updates (
   $updates_command = "puppet package updates --render-as json"
 
   if $::kernel != 'windows' {
-
-    $facts_cache_path = "/etc/puppetlabs/facter/facts.d/package_updates.json"
-
-    # This is dumb but we must count on this directory existing
-    # and it may be managed somewhere else
-    exec { 'create facts.d':
-      command => 'mkdir -p /etc/puppetlabs/facter/facts.d/',
-      path    => '/bin:/usr/bin',
-      creates => '/etc/puppetlabs/facter/facts.d/',
-    }
+    $facts_d_directory = '/opt/puppetlabs/facter/facts.d'
 
     cron { 'package_updates':
-      command  => "${updates_command} > ${facts_cache_path}",
+      command  => "${updates_command} > ${facts_d_directory}",
       minute   => $minute,
       hour     => $hour,
       month    => $_month,
