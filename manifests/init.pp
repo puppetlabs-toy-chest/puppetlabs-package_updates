@@ -1,11 +1,67 @@
 class package_updates (
-  $minute   = undef,
-  $hour     = 3,
-  $month    = undef,
-  $monthday = undef,
-  $weekday  = undef,
+
+  Enum['daily','weekly','monthly','once'] $schedule = 'daily',
+
+  Variant[
+    Integer[0,59],
+    Array[
+      Integer[0,59]
+    ]
+  ] $minute = [0,1,2,3,4,5,6,7,8,9,],
+
+  Integer[0,23] $hour = 3,
+
+  Variant[
+    Integer[1,12],
+    Array[Integer[1,12]],
+    Enum[
+      'january', 'february', 'march','april','may','june',
+      'july','august','september','october','november','december','all'
+    ]
+  ] $month = 'all',
+
+  Variant[
+    Integer[1,31],
+    Array[Integer[1,31]],
+    Enum['all']
+  ] $monthday = 'all',
+
+  Variant[
+    Integer[0,7],
+    Array[Integer[0,7]],
+    Enum[
+      'sunday','monday','tuesday','wednesday',
+      'thursday','friday','saturday','sunday','all'
+    ]
+  ] $weekday  = 'all',
 ) {
+
+  # If all is specified, just build an
+  # array of every month day number
+  $_monthday = $monthday ? {
+    'all'   => range('1','31'),
+    default => $monthday,
+  }
+
+  # If all is specified, just build an
+  # array of every week day number
+  $_weekday = $weekday ? {
+    'all'   => range('1','7'),
+    default => $weekday,
+  }
+
+  # If all is specified, just build an
+  # array of every month number
+  $_month = $month ? {
+    'all'   => range('1','12'),
+    default => $month
+  }
+
+  $updates_command = "puppet package updates --render-as json"
+
   if $::kernel != 'windows' {
+
+    $facts_cache_path = "/etc/puppetlabs/facter/facts.d/package_updates.json"
 
     # This is dumb but we must count on this directory existing
     # and it may be managed somewhere else
@@ -16,12 +72,12 @@ class package_updates (
     }
 
     cron { 'package_updates':
-      command  => 'puppet package updates --render-as json > /etc/puppetlabs/facter/facts.d/package_updates.json',
+      command  => "${updates_command} > ${facts_cache_path}",
       minute   => $minute,
       hour     => $hour,
-      month    => $month,
-      monthday => $monthday,
-      weekday  => $weekday,
+      month    => $_month,
+      monthday => $_monthday,
+      weekday  => $_weekday,
     }
   } else {
     notice('The package_updates class only supports non-Windows systems currently')
