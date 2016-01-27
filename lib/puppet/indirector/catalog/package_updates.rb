@@ -28,7 +28,16 @@ class Puppet::Resource::Catalog::PackageUpdates < Puppet::Resource::Catalog::Com
       if catalog_package = managed_packages.find { |r|
           r[:name] == package_update[:name] and r[:provider] == package_update[:provider]
         }
-        catalog_package[:ensure] = catalog_update[:ensure]
+        # Make sure not to override the version if the version is managed by Puppet code
+        if [nil,'installed','present','absent','purged'].include? catalog_package[:ensure]
+          catalog_package[:ensure] = package_update[:ensure]
+        else
+          # If we're here, the version is being specified in Puppet code
+          unless catalog_package[:ensure] == package_update[:ensure]
+            # The specified update doesn't match what's specified in Puppet code
+            Puppet.warn "Not overriding version #{catalog_package[:ensure]} with specified update #{package_update[:ensure]} for package #{package_update[:name]}"
+          end
+        end
       else
         catalog.add_resource package_update
       end
