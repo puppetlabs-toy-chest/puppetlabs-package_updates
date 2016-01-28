@@ -17,7 +17,7 @@ class Puppet::Resource::Catalog::PackageUpdates < Puppet::Resource::Catalog::Com
     package_updates = Array.new
     retrieve_package_updates(node).each do |name,parameters|
       package_parameters = { :name => name,
-        :ensure   => parameters['update'],
+        :ensure   => parameters['version'],
         :provider => parameters['provider']
       }
 
@@ -54,7 +54,7 @@ class Puppet::Resource::Catalog::PackageUpdates < Puppet::Resource::Catalog::Com
 
   def retrieve_package_updates(node)
     begin
-      Puppet::Node::Patches.indirection.find(node)
+      Puppet::Node::Patches.find(node)
     rescue Puppet::Node::Patches::NoPatchFile => e
       Puppet.warning e
       Puppet.warning "Continuing with compilation without managing patches"
