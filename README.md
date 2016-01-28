@@ -111,6 +111,55 @@ The following query will retrieve all updates for packages that's version is not
 
 You can use [subqueries](https://docs.puppetlabs.com/puppetdb/3.2/api/query/v4/facts.html#subquery-relationships) to construct more targeted queries.
 
+
+#### Apply Patches
+
+This module provides a catalog terminus called **package_updates**.  The
+catalog terminus injects patch information into a node's commpiled catalog. To
+set the terminus, set the **catalog_terminus ** setting in the **master** 
+section of the /etc/puppetlabs/puppet/puppet.conf file to the value of
+**package_updates** by running the folllowing comand.  Restart the puppetserver
+service once complete.
+
+    puppet config set catalog_terminus package_updates
+
+For Puppet Enterprise installations, simply declare the
+**package_updates::pe_master** class in the **PE Master** node group in the
+Puppet Enterprise Console.
+
+
+To apply patches to systems, a hash of package versions to be applied must be
+generated and added to your r10k control repository. By specifying patch
+information in the control repo, patches can be defined, tested, and promoted
+through the delivery process you already use for all other code.
+
+The hash follows the following example yaml format:
+
+    package_updates:
+      classes:
+        role::webserver
+          apache:
+            version: '2.9.3.el7'
+            provider: 'yum'
+      gcc:
+        version: '4.8.5-4.el7'
+        provider: 'yum'
+
+The **classes** key in the package_updates hash contains a hash where each key
+is the name of a Puppet class that should have the patches specified applied to
+any system with that class. Any packages specified outside the **classes** key
+are assumed global and will apply to any system at all.
+
+_Using Hiera_
+
+The default terminus for retrieving patches is from Hiera.  Hiera enables users
+to break the package_updates hash into hierarchies such as patch information
+for Red Hat systems vs Ubuntu or specifying patches assigned to geographical location.
+
+The Puppet::Node::Patches indirector finds all instances of the package_updates
+hash in any hierarchy that applies to the node, merging all found instances of
+package_updates.
+
 #### Report Generation
 
 Since the PuppetDB query outputs standard JSON, existing tools can be used to generate spreadsheet
@@ -120,6 +169,7 @@ Suggested tools:
 
   * Ruby - [json2csv](https://github.com/ngmaloney/json2csv)
   * NodJS - [json2csv](https://github.com/zemirco/json2csv)
+
 
 ### Limitations
 
