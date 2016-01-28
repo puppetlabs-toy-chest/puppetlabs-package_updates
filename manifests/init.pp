@@ -6,10 +6,17 @@ class package_updates (
     Integer[0,59],
     Array[
       Integer[0,59]
-    ]
-  ] $minute = [0,1,2,3,4,5,6,7,8,9,],
+    ],
+    Enum['all']
+  ] $minute = 0,
 
-  Integer[0,23] $hour = 3,
+  Variant[
+    Integer[0,23],
+    Array[
+      Integer[0,23]
+    ],
+    Enum['all']
+  ] $hour = 3,
 
   Variant[
     Integer[1,12],
@@ -37,6 +44,20 @@ class package_updates (
 ) {
 
   # If all is specified, just build an
+  # array of every minute
+  $_hour = $hour ? {
+    'all'   => range('0','23'),
+    default => $hour
+  }
+
+  # If all is specified, just build an
+  # array of every minute
+  $_minute = $minute ? {
+    'all'   => range('0','59'),
+    default => $minute
+  }
+
+  # If all is specified, just build an
   # array of every month day number
   $_monthday = $monthday ? {
     'all'   => range('1','31'),
@@ -57,15 +78,24 @@ class package_updates (
     default => $month
   }
 
-  $updates_command = "puppet package updates --render-as json"
+  $updates_subcommand = "package updates --render-as json"
 
   if $::kernel != 'windows' {
+    $puppet_path       = '/opt/puppetlabs/bin/puppet'
     $facts_d_directory = '/opt/puppetlabs/facter/facts.d'
+    $tmp_path          = '/tmp/package_updates.json'
+
+    # The `package updates` command takes a long time to run. Since the command is using shell 
+    # redirection, the target file is truncated prior to the `package updates` command being run. 
+    # Thus Facter will throw an error while looking up the package_updates fact if Facter is run
+    # while the cron job is executing. So instead we'll output to a tmp file and mv the 
+    # file into place when the `package_updates` command is done executing.
+    $command = "${puppet_path} ${updates_subcommand} > ${tmp_path} && mv -f ${tmp_path} ${facts_d_directory}/"
 
     cron { 'package_updates':
-      command  => "${updates_command} > ${facts_d_directory}",
-      minute   => $minute,
-      hour     => $hour,
+      command  => $command,
+      minute   => $_minute,
+      hour     => $_hour,
       month    => $_month,
       monthday => $_monthday,
       weekday  => $_weekday,
