@@ -8,6 +8,10 @@
     * [Setup requirements](#setup-requirements)
     * [Beginning with package_updates](#beginning-with-package_updates)
 3. [Usage - Configuration options and additional functionality](#usage)
+    * [Setting up a scan schedule](#setting-a-scan-schedule)
+    * [Using the custom fact](#using-the-custom-fact)
+    * [Querying infrastructure patch state](#querying-infrastructure-patch-state)
+    * [Patch deployment](#patch-deployment)
 4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
 5. [Limitations - OS compatibility, etc.](#limitations)
 
@@ -112,11 +116,11 @@ The following query will retrieve all updates for packages that's version is not
 You can use [subqueries](https://docs.puppetlabs.com/puppetdb/3.2/api/query/v4/facts.html#subquery-relationships) to construct more targeted queries.
 
 
-#### Apply Patches
+#### Patch deployment
 
 This module provides a catalog terminus called **package_updates**.  The
 catalog terminus injects patch information into a node's commpiled catalog. To
-set the terminus, set the **catalog_terminus ** setting in the **master** 
+set the terminus, set the **catalog_terminus ** setting in the **master**
 section of the /etc/puppetlabs/puppet/puppet.conf file to the value of
 **package_updates** by running the folllowing comand.  Restart the puppetserver
 service once complete.
@@ -150,7 +154,7 @@ is the name of a Puppet class that should have the patches specified applied to
 any system with that class. Any packages specified outside the **classes** key
 are assumed global and will apply to any system at all.
 
-_Using Hiera_
+**Using Hiera**
 
 The default terminus for retrieving patches is from Hiera.  Hiera enables users
 to break the package_updates hash into hierarchies such as patch information
@@ -173,7 +177,7 @@ Suggested tools:
 
 ### Limitations
 
-This module is compatible with Puppet 4.x+ only. It makes use of the Puppet 4 parameter data type 
+This module is compatible with Puppet 4.x+ only. It makes use of the Puppet 4 parameter data type
 validation which is incompatible with Puppet 3.x
 
 This tool currently only works with non-Windows systems. Once the interface can handle both cron
