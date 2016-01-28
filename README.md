@@ -2,32 +2,48 @@
 
 #### Table of Contents
 
-1. [Module Description - What the module does and why it is useful](#module-description)
-2. [Setup - The basics of getting started with package_updates](#setup)
+1. [Module Description](#module-description)
+2. [Setup](#setup)
     * [What package_updates affects](#what-package_updates-affects)
     * [Setup requirements](#setup-requirements)
     * [Beginning with package_updates](#beginning-with-package_updates)
-3. [Usage - Configuration options and additional functionality](#usage)
+3. [Usage](#usage)
     * [Setting up a scan schedule](#setting-a-scan-schedule)
     * [Using the custom fact](#using-the-custom-fact)
     * [Querying infrastructure patch state](#querying-infrastructure-patch-state)
     * [Patch deployment](#patch-deployment)
-4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
-5. [Limitations - OS compatibility, etc.](#limitations)
+4. [Reference](#reference)
+5. [Limitations - OS and Puppet compatibility](#limitations)
 
 ## Module Description
 
-This is a proof-of-concept module  that provides a [Puppet Face](https://puppetlabs.com/puppet-faces-faq) to
+This is an experimental module that aims to enable continuous delivery of all
+package updates within an infrastructure across any package manager that has a
+Puppet provider that supports the upgradeable feature. Package information is
+stored in PuppetDB is inventory information and package update versions are
+specified in Hiera as part of a r10k change management process.
+
+The module provides a [Puppet Face](https://puppetlabs.com/puppet-faces-faq) to
 query available package updates from all package providers available on the system. The
 Face is able to query from over 12 package managers out of the box and more can be added by
 downloading modules from the Forge that include additional package providers, such as the
 [chocolatey/chocolatey](https://forge.puppetlabs.com/chocolatey/chocolatey) module for Windows.
 
-In addition to the Puppet Face, the module provides a class that manages a cron job to scan
-for available package updates on a regular schedule.  The cron job takes the output and generates
-a custom Facter fact so the package update status is always up to date in PuppetDB.  Keeping the
-data in PuppetDB provides an easy interface to query for available updates and generate
-custom reports.
+The provided **package_updates** class manages a cron job to scan the system
+for available package updates on a regular schedule.  The cron job takes the
+output from the included `puppet package updates` plugin and generates a
+custom Facter fact so the package update status is always up to date in
+PuppetDB.  Keeping the data in PuppetDB provides an easy interface to query
+for available updates and generate custom reports.
+
+This module also includes a catalog terminus that searches for package update
+information in Hiera, and injects that information into a normally compiled
+catalog.  This way, package updates can be managed regularly as package
+resources in Puppet code, while the updates to those packages, and all packages
+NOT managed by Puppet, can be managed as Puppet resources.  Updates are
+continuously enforced each Puppet run, show up in the Puppet reports, and are
+fully auditable.
+
 
 ## Setup
 
