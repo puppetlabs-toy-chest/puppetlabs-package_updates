@@ -21,6 +21,12 @@ class package_updates (
   Variant[
     Integer[1,12],
     Array[Integer[1,12]],
+    Array[
+      Enum[
+        'january', 'february', 'march','april','may','june',
+        'july','august','september','october','november','december'
+      ]
+    ],
     Enum[
       'january', 'february', 'march','april','may','june',
       'july','august','september','october','november','december','all'
@@ -36,6 +42,11 @@ class package_updates (
   Variant[
     Integer[0,7],
     Array[Integer[0,7]],
+    Array[
+      Enum[
+        'sunday','monday','tuesday','wednesday',
+        'thursday','friday','saturday','sunday'
+      ]
     Enum[
       'sunday','monday','tuesday','wednesday',
       'thursday','friday','saturday','sunday','all'
