@@ -13,7 +13,7 @@
     * [Querying infrastructure patch state](#querying-infrastructure-patch-state)
     * [Patch deployment](#patch-deployment)
 4. [Reference](#reference)
-5. [Limitations - OS and Puppet compatibility](#limitations)
+5. [Limitations - OS and Puppet compatibility](#limitations-and-support)
 
 ## Module Description
 
@@ -23,26 +23,27 @@ Puppet provider that supports the upgradeable feature. Package information is
 stored in PuppetDB is inventory information and package update versions are
 specified in Hiera as part of a r10k change management process.
 
-The module provides a [Puppet Face](https://puppetlabs.com/puppet-faces-faq) to
-query available package updates from all package providers available on the system. The
-Face is able to query from over 12 package managers out of the box and more can be added by
-downloading modules from the Forge that include additional package providers, such as the
-[chocolatey/chocolatey](https://forge.puppetlabs.com/chocolatey/chocolatey) module for Windows.
+The module provides a `puppet package updates` subcommand  to query available
+package updates from all package providers available on the system. The
+subcommand is able to query from almost all package managers out of the box and
+more can be added by downloading modules from the Forge that include additional
+package providers, such as the [chocolatey/chocolatey](https://forge.puppetlabs.com/chocolatey/chocolatey)
+module for Windows.
 
 The provided **package_updates** class manages a cron job to scan the system
 for available package updates on a regular schedule.  The cron job takes the
 output from the included `puppet package updates` plugin and generates a
-custom Facter fact so the package update status is always up to date in
-PuppetDB.  Keeping the data in PuppetDB provides an easy interface to query
-for available updates and generate custom reports.
+Facter fact so the package update status is always up to date in PuppetDB.
+Keeping the data in PuppetDB provides an easy interface to query for
+available updates and generate custom reports.
 
 This module also includes a catalog terminus that searches for package update
 information in Hiera, and injects that information into a normally compiled
-catalog.  This way, package updates can be managed regularly as package
-resources in Puppet code, while the updates to those packages, and all packages
-NOT managed by Puppet, can be managed as Puppet resources.  Updates are
-continuously enforced each Puppet run, show up in the Puppet reports, and are
-fully auditable.
+catalog.  This way, packages can be managed as usual as  package resources in
+Puppet code, while the updates to those packages, and all system packages with
+updates NOT managed by Puppet code, can be managed as Puppet resources.
+Updates are continuously enforced each Puppet run, show up in the Puppet
+reports, and are fully auditable.
 
 
 ## Setup
@@ -51,6 +52,7 @@ fully auditable.
 
 * A cron job in the root user's crontab
 * A custom Facter fact with package update information
+* A custom catalog compiler
 
 ### Setup requirements
 
@@ -60,6 +62,10 @@ fully auditable.
 
 To have nodes scan for updates on a regular cadence and report the result as a custom fact,
 declare the ***package_updates*** class to any node or node group you'd like to monitor for updates.
+
+To deploy package updates, declare the **package_updates::pe_master** class to
+the **PE Master** group in the Puppet Enterprise Console. See [Patch
+deployment](#patch-deployment) for how to define and deploy patches.
 
 ### Usage
 
@@ -180,7 +186,7 @@ The Puppet::Node::Patches indirector finds all instances of the package_updates
 hash in any hierarchy that applies to the node, merging all found instances of
 package_updates.
 
-#### Report Generation
+#### Report generation
 
 Since the PuppetDB query outputs standard JSON, existing tools can be used to generate spreadsheet
 reports or custom interfaces can be built that renders the serialized data.
@@ -191,11 +197,12 @@ Suggested tools:
   * NodJS - [json2csv](https://github.com/zemirco/json2csv)
 
 
-### Limitations
+### Limitations and support
 
 This module is compatible with Puppet 4.x+ only. It makes use of the Puppet 4 parameter data type
 validation which is incompatible with Puppet 3.x
 
-This tool currently only works with non-Windows systems. Once the interface can handle both cron
-and scheduled_task resources, Windows support for package management systems like Chocolatey
-can easily be added.
+Setting a schedule to scan for updates on a regular schedule currently only
+works with non-Windows systems. Once the **package_updates** interface can
+handle both cron and scheduled_task resources, Windows support for package
+management systems like Chocolatey can easily be added.
