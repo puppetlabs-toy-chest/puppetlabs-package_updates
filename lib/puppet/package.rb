@@ -98,6 +98,7 @@ class Puppet::Package
 
       if latest != current
         package_updates[p.title] = {
+          'name'     => p.title,
           'current'  => current,
           'update'   => latest,
           'provider' => String(p[:provider])
