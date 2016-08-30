@@ -1,8 +1,8 @@
 {
   "name": "puppetlabs-package_updates",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "author": "Puppet Labs",
-  "summary": "A module for monitoring for package updates",
+  "summary": "A module for monitoring and applying package updates",
   "license": "Apache-2.0",
   "source": "https://github.com/puppetlabs/puppetlabs-package_updates",
   "project_page": "https://github.com/puppetlabs/puppetlabs-package_updates",
@@ -27,7 +27,8 @@
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
         "12.04",
-        "14.04"
+        "14.04",
+        "16.04"
       ]
     }
   ]

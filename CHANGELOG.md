@@ -1,3 +1,7 @@
+## Release 1.0.0
+
+* Add ability to apply patches
+
 ## Release 0.1.0
 ### Summary
 
