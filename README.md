@@ -105,38 +105,12 @@ and caches the results for Facter.
 
 #### Querying infrastructure patch state
 
-You can use PuppetDB's API to query the patch state for different parts of the infrastructure.
-For example, to query for all production systems that have updates available, the following query can
-be used against the /pdb/query/v4/facts endpoint:
+You can use the `puppet query` command to query the patch state for different parts of the infrastructure.
+For example, the following command will return all package updates for the production environment.
 
-    ["and",
-      ["=", "name", "package_updates"],
-      ["=", "environment", "production"]
-    ]
+    puppet query 'facts { name = "package_updates" and environment = "production" }'
 
-The following query will retrieve all updates for packages that's version is not being managed by Puppet
-
-    ["and",
-      ["=", "environment", "production"],
-      ["in", "name",
-        ["extract", "name",
-          ["select-resources",
-            ["and",
-              ["=", "type", "package"],
-              ["not",
-                ["or",
-                  ["=", "ensure", "latest"],
-                  ["~", "ensure", "^(?:(\d+)\.)?(?:(\d+)\.)?(\*|\d+)$"]
-                ]
-              ]
-            ]
-          ]
-        ]
-      ]
-    ]
-
-You can use [subqueries](https://docs.puppetlabs.com/puppetdb/3.2/api/query/v4/facts.html#subquery-relationships) to construct more targeted queries.
-
+To learn more about using PQL, go [here](https://docs.puppet.com/puppetdb/4.2/api/query/tutorial-pql.html).
 
 #### Patch deployment
 
