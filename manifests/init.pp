@@ -1,4 +1,5 @@
 class package_updates (
+  Array[String] $precommand= [],
 
   Enum['daily','weekly','monthly','once'] $schedule = 'daily',
 
@@ -97,12 +98,17 @@ class package_updates (
     $facts_d_directory = '/opt/puppetlabs/facter/facts.d'
     $tmp_path          = '/tmp/package_updates.json'
 
+    if $precommand != [] {
+      $precmd="${join($precommand,';')};"
+    } else {
+      $precmd=''
+    }
     # The `package updates` command takes a long time to run. Since the command is using shell
     # redirection, the target file is truncated prior to the `package updates` command being run.
     # Thus Facter will throw an error while looking up the package_updates fact if Facter is run
     # while the cron job is executing. So instead we'll output to a tmp file and mv the
     # file into place when the `package_updates` command is done executing.
-    $command = "${puppet_path} ${updates_subcommand} > ${tmp_path} && mv -f ${tmp_path} ${facts_d_directory}/"
+    $command = "${precmd}${puppet_path} ${updates_subcommand} > ${tmp_path} && mv -f ${tmp_path} ${facts_d_directory}/"
 
     cron { 'package_updates':
       command  => $command,
