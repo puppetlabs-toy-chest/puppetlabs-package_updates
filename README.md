@@ -75,12 +75,36 @@ The module contains a single class: **package_updates**.  This class sets up a
 cron job to run the puppet face and caches the result in an external fact.  By
 default, the cron job runs every day at 3:00am.  You can change that with the
 available class parameters.
+The class will also allow to specify a list of command to execute before the
+cron command.  You can specify a proxy server and it's exclution as part of
+the cron job.
 
 * minute - The minute at which to run the scan. Default: undef
 * hour - The hour at which to run the scan. Default: 3
 * month - The month of the year. Default: undef
 * monthday - The day of the month to run the scan. Default: undef
 * weekday - The day of th week to run the scan. Default: undef
+* precommand - Array containing command to execute first. Default: Empty Array
+
+**Example**
+
+You can define a $proxy_command Array and pass it to the class this way:
+
+    $proxy_command=["export http_proxy=${::proxy_server}",
+      "export https_proxy=${::proxy_server}",
+      "export no_proxy=${::no_proxy}"
+    ]
+    class {'::package_updates' :
+      precommand => $proxy_command,
+      schedule   => 'daily',
+      minute     => 0,
+      hour       => 3,
+      month      => 'all',
+      monthday   => 'all',
+      weekday    => 'all',
+    }
+
+Proxy defined in this way should work, with the correct exclusion, with all the package provider.
 
 #### Using the Puppet Command Line Interface
 
