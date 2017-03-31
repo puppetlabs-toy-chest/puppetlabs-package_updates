@@ -84,7 +84,7 @@ the cron job.
 * month - The month of the year. Default: undef
 * monthday - The day of the month to run the scan. Default: undef
 * weekday - The day of th week to run the scan. Default: undef
-* precommand - Array containing command to execute first. Default: undef
+* precommand - Array containing command to execute first. Default: Empty Array
 
 **Example**
 
