@@ -54,7 +54,12 @@ class package_updates (
       'thursday','friday','saturday','sunday','all'
     ]
   ] $weekday  = 'all',
-) {
+
+  $puppet_path       = $package_updates::params::puppet_path,
+  $facts_d_directory = $package_updates::params::facts_d_directory,
+  $tmp_path          = $package_updates::params::tmp_path,
+
+) inherits package_updates::params {
 
   # If all is specified, just build an
   # array of every minute
@@ -94,9 +99,6 @@ class package_updates (
   $updates_subcommand = "package updates --render-as json"
 
   if $::kernel != 'windows' {
-    $puppet_path       = '/opt/puppetlabs/bin/puppet'
-    $facts_d_directory = '/opt/puppetlabs/facter/facts.d'
-    $tmp_path          = '/tmp/package_updates.json'
 
     if $precommand != [] {
       $precmd="${join($precommand,';')};"
