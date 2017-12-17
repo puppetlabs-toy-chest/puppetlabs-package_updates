@@ -1,0 +1,3 @@
+package_updates::puppet_path: '/opt/puppetlabs/bin/puppet'
+package_updates::facts_d_directory: '/opt/puppetlabs/facter/facts.d'
+package_updates::tmp_path: '/tmp/package_updates.json'

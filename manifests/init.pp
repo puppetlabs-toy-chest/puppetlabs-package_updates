@@ -55,11 +55,11 @@ class package_updates (
     ]
   ] $weekday  = 'all',
 
-  $puppet_path       = $package_updates::params::puppet_path,
-  $facts_d_directory = $package_updates::params::facts_d_directory,
-  $tmp_path          = $package_updates::params::tmp_path,
+  $puppet_path,
+  $facts_d_directory,
+  $tmp_path,
 
-) inherits package_updates::params {
+) {
 
   # If all is specified, just build an
   # array of every minute
