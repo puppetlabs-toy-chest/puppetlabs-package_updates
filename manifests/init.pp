@@ -95,8 +95,8 @@ class package_updates (
 
   if $::kernel != 'windows' {
     $puppet_path       = '/opt/puppetlabs/bin/puppet'
-    $facts_d_directory = '/opt/puppetlabs/facter/facts.d'
-    $tmp_path          = '/tmp/package_updates.json'
+    $facts_d_path      = '/opt/puppetlabs/facter/facts.d/package_updates.json'
+    $tmp_path          = '$(mktemp)'
 
     if $precommand != [] {
       $precmd="${join($precommand,';')};"
@@ -108,7 +108,7 @@ class package_updates (
     # Thus Facter will throw an error while looking up the package_updates fact if Facter is run
     # while the cron job is executing. So instead we'll output to a tmp file and mv the
     # file into place when the `package_updates` command is done executing.
-    $command = "${precmd}${puppet_path} ${updates_subcommand} > ${tmp_path} && mv -f ${tmp_path} ${facts_d_directory}/"
+    $command = "${precmd}tmp=\"${tmp_path}\";${puppet_path} ${updates_subcommand} > \${tmp} && mv -f \${tmp} ${facts_d_path}"
 
     cron { 'package_updates':
       command  => $command,
