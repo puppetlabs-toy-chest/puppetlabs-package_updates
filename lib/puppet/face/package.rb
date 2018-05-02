@@ -47,7 +47,7 @@ Puppet::Indirector::Face.define(:package, '0.0.1') do
     end
 
     when_rendering :json do |package_updates|
-      package_updates.to_json
+      package_updates
     end
   end
 
