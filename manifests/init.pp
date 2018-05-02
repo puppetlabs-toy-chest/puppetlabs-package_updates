@@ -56,38 +56,33 @@ class package_updates (
   ] $weekday  = 'all',
 ) {
 
-  # If all is specified, just build an
-  # array of every minute
+  # If all is specified, use '*'
   $_hour = $hour ? {
-    'all'   => range('0','23'),
+    'all'   => ['*'],
     default => $hour
   }
 
-  # If all is specified, just build an
-  # array of every minute
+  # If all is specified, use '*'
   $_minute = $minute ? {
-    'all'   => range('0','59'),
+    'all'   => ['*'],
     default => $minute
   }
 
-  # If all is specified, just build an
-  # array of every month day number
+  # If all is specified, use '*'
   $_monthday = $monthday ? {
-    'all'   => range('1','31'),
+    'all'   => ['*'],
     default => $monthday,
   }
 
-  # If all is specified, just build an
-  # array of every week day number
+  # If all is specified, use '*'
   $_weekday = $weekday ? {
-    'all'   => range('1','7'),
+    'all'   => ['*'],
     default => $weekday,
   }
 
-  # If all is specified, just build an
-  # array of every month number
+  # If all is specified, use '*'
   $_month = $month ? {
-    'all'   => range('1','12'),
+    'all'   => ['*'],
     default => $month
   }
 
